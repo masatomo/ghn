@@ -31,6 +31,18 @@ class Ghn
       !!@valid
     end
 
+    def open?
+      @command == 'open' || @command == 'browse'
+    end
+
+    def read?
+      @command == 'read'
+    end
+
+    def list?
+      @command == 'list'
+    end
+
     def print_invalid
       if @command.nil? || @command.empty?
         print_empty_command

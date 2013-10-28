@@ -44,4 +44,58 @@ describe Ghn::Command do
       it { should_not be_valid }
     end
   end
+
+  describe '#open?' do
+    context 'if no command is passed' do
+      subject { described_class.new([]).open? }
+
+      it { should_not be_true }
+    end
+
+    context 'if `open` command is passed' do
+      subject { described_class.new(['open']).open? }
+
+      it { should be_true }
+    end
+
+    context 'if `browse` command is passed' do
+      subject { described_class.new(['browse']).open? }
+
+      it { should be_true }
+    end
+
+    context 'if other command is passed' do
+      subject { described_class.new(['list']).open? }
+
+      it { should_not be_true }
+    end
+  end
+
+  describe '#read?' do
+    context 'if `read` command is passed' do
+      subject { described_class.new(['read']).read? }
+
+      it { should be_true }
+    end
+
+    context 'if other command is passed' do
+      subject { described_class.new(['list']).read? }
+
+      it { should_not be_true }
+    end
+  end
+
+  describe '#list?' do
+    context 'if `list` command is passed' do
+      subject { described_class.new(['list']).list? }
+
+      it { should be_true }
+    end
+
+    context 'if other command is passed' do
+      subject { described_class.new(['read']).list? }
+
+      it { should_not be_true }
+    end
+  end
 end
