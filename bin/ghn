@@ -5,13 +5,15 @@ require 'optparse'
 
 token = Ghn::Token.new
 unless token.valid?
-  token.print_no_access_token_exit!
+  puts Ghn.no_token
+  exit!
 end
 
 command = Ghn::Command.new(ARGV)
 unless command.valid?
   command.print_invalid
-  Ghn::Options.print_usage_exit
+  puts Ghn.usage
+  exit!
 end
 
 ghn = Ghn.new(token, command)

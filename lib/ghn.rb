@@ -54,4 +54,32 @@ class Ghn
   def marked(notification)
     "[x] #{notification}"
   end
+
+  def self.usage
+    <<MESSAGE
+Usage: #{File.basename $0} [options] [command] [user/repo]
+    options:   -h, --help, --usage  Show this message
+
+    command:   list   List unread notifications
+               open   Open notifications in browser
+               read   Mark as read listed notifications
+
+    user/repo: GitHub user and repository (e.g. github/hubot)
+               You can specify it to narrow down target notifications
+
+MESSAGE
+  end
+
+  def self.no_token
+    <<MESSAGE
+** Authorization required.
+
+Please set ghn.token to your .gitconfig.
+    $ git config --global ghn.token [Your GitHub access token]
+
+To get new token, visit
+https://github.com/settings/tokens/new
+
+MESSAGE
+  end
 end
