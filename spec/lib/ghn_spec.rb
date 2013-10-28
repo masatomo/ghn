@@ -17,4 +17,12 @@ describe Ghn do
       end
     end
   end
+
+  describe '#marked' do
+    subject { described_class.new(token, command).marked("https://github.com/kyanny/ghn/issues/13") }
+
+    it 'should prepend [x] mark to notification url' do
+      expect(subject).to match(/\A\[x\] /)
+    end
+  end
 end

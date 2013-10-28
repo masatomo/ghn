@@ -26,7 +26,7 @@ class Ghn
       system "open #{notification}"
     when @command.read?
       mark(notification)
-      puts marked(notification)
+      puts marked(notification.to_s)
     when @command.list?
       puts notification
     else
