@@ -1,14 +1,13 @@
 require 'ghn/version'
 require 'ghn/token'
-require 'ghn/options'
 require 'ghn/command'
+require 'ghn/notification'
 require 'github_api'
 
 class Ghn
-  def initialize(token, command, options)
+  def initialize(token, command)
     @token = token
     @command = command
-    @options = options
   end
 
   def run
@@ -17,11 +16,21 @@ class Ghn
 
   def run_print
     run.each do |notification|
-      if @options.open_browser?
-        system "open #{notification}"
-      else
-        puts notification
-      end
+      process(notification)
+    end
+  end
+
+  def process(notification)
+    case
+    when @command.open?
+      system "open #{notification}"
+    when @command.read?
+      mark(notification)
+      puts marked(notification)
+    when @command.list?
+      puts notification
+    else
+      raise ArgumentError, "no such command: #{@command.command}"
     end
   end
 
@@ -35,23 +44,14 @@ class Ghn
       params['user'], params['repo'] = target.split('/')
     end
 
-    client.activity.notifications.list(params).map { |notification|
-      repo = notification.repository.full_name
-      type, number = if notification.subject.url.match(/pulls/)
-                       ['pull', notification.subject.url.match(/[^\/]+\z/).to_a.first]
-                     else
-                       ['issues', notification.subject.url.match(/[^\/]+\z/).to_a.first]
-                     end
-      if @options.mark_as_read?
-        self.mark(notification.id)
-        "[x] https://github.com/#{repo}/#{type}/#{number}"
-      else
-        "https://github.com/#{repo}/#{type}/#{number}"
-      end
-    }
+    client.activity.notifications.list(params).map { |data| Ghn::Notification.new(data) }
   end
 
-  def mark(id, read = true)
-    client.activity.notifications.mark(thread_id: id, read: read)
+  def mark(notification, read = true)
+    client.activity.notifications.mark(thread_id: notification['id'], read: read)
+  end
+
+  def marked(notification)
+    "[x] #{notification}"
   end
 end
