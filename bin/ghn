@@ -14,5 +14,5 @@ unless command.valid?
   Ghn::Options.print_usage_exit
 end
 
-ghn = Ghn.new(token, command, options)
+ghn = Ghn.new(token, command)
 ghn.run_print
