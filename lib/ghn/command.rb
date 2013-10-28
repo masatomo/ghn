@@ -1,7 +1,7 @@
 class Ghn
   class Command
     def self.commands
-      ['list']
+      ['list', 'open', 'browse', 'read']
     end
 
     attr_reader :command
@@ -14,12 +14,16 @@ class Ghn
     end
 
     def process!
-      @command = @argv.first
-      if self.class.commands.include?(@command)
-        @valid = true
-        @args = @argv.drop(1)
+      case
+      when @argv.size.zero?
+        @command = 'list'
+        @valid   = true
+      when self.class.commands.include?(@argv.first)
+        @command = @argv.first
+        @args    = @argv.drop(1)
+        @valid   = true
       else
-        @valid = false
+        @valid   = false
       end
     end
 
