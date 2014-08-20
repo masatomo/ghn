@@ -39,11 +39,13 @@ class Ghn
       repo = notification.repository.full_name
       type = notification_type(notification.subject.url)
       number = notification.subject.url.match(/[^\/]+\z/).to_a.first
+      comment_number = notification.subject.latest_comment_url.match(/[^\/]+\z/).to_a.first
+      url = "https://github.com/#{repo}/#{type}/#{number}#issuecomment-#{comment_number}"
       if @options.mark_as_read?
         self.mark(notification.id)
-        "[x] https://github.com/#{repo}/#{type}/#{number}"
+        "[x] #{url}"
       else
-        "https://github.com/#{repo}/#{type}/#{number}"
+        url
       end
     }
   end
